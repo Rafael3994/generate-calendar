@@ -1,0 +1,21 @@
+{
+  "name": "dinamic-calendar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon --watch src --exec ts-node src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "standard": "^17.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "eslintConfig": {
+    "extends": "standard"
+  }
+}
