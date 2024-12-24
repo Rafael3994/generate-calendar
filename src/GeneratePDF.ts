@@ -11,6 +11,8 @@ export class GeneratePDF {
     private calendarWidth: number;
     private marginLeft: number;
     private marginTop: number;
+    private radio: number;
+    private fontsize: number;
 
     constructor(calendar: Calendar) {
         this.calendar = calendar;
@@ -20,7 +22,9 @@ export class GeneratePDF {
         this.cellHeight = 30;
         this.calendarWidth = this.cellWidth * 7;
         this.marginLeft = (this.pageWidth - this.calendarWidth) / 2;
-        this.marginTop = 18;
+        this.marginTop = 14;
+        this.radio = 3.3;
+        this.fontsize = 12;
     }
 
     public drawCalendarYear(): void {
@@ -32,12 +36,12 @@ export class GeneratePDF {
 
     public drawCalendar(numberMonth: number): void {
         const monthName = this.calendar.getMonthName(numberMonth);
-        const year = new Date().getFullYear();
+        const year = this.calendar.getYear();
         const days = this.calendar.getDaysInMonth(numberMonth);
 
         this.drawTitle(monthName, year);
         this.drawHeader();
-        this.drawBody(days);
+        this.drawBody(days, numberMonth);
     }
 
     private drawTitle(monthName: string, year: number): void {
@@ -67,7 +71,7 @@ export class GeneratePDF {
 
     }
 
-    private drawBody(days: (number | null)[]): void {
+    private drawBody(days: (number | null)[], numberMonth: number): void {
         let xOffset = this.marginLeft;
         let yOffset = this.marginTop + 12;
         this.doc.setFont("helvetica", "normal");
@@ -82,24 +86,66 @@ export class GeneratePDF {
 
             this.printBorder(xOffset, yOffset, this.cellWidth, this.cellHeight);
             if (day !== null) {
-                if (day >= 10)
-                    this.printText(String(day), xOffset + this.cellWidth - 6, yOffset + 5);
-                else {
-                    this.printText(String(day), xOffset + this.cellWidth - 4, yOffset + 5);
-
+                if (day >= 10) {
+                    this.printText(String(day), xOffset + this.cellWidth - 6.3, yOffset + 5.5);
                 }
+                else {
+                    this.printText(String(day), xOffset + this.cellWidth - 5.15, yOffset + 5.3);
+                }
+
+                const holidays = ['21/01/Cumple Isa', '6/01', '10/01/D. Hispanidad', '02/12/Cumple Eva'];
+
+                holidays.forEach(item => {
+                    const [dayHoliday, monthHoliday, nameHoliday] = item.split('/');
+
+                    if (+dayHoliday === day && +monthHoliday === numberMonth) {
+                        this.printHoliday(xOffset, yOffset, nameHoliday);
+                    }
+                });
+
             }
 
             xOffset += this.cellWidth;
         }
     }
 
+    private printHoliday(xOffset: number, yOffset: number, nameHoliday: string = this.calendar.getTextHolidays()) {
+        this.doc.setFontSize(10);
+        const textWidth = this.doc.getTextWidth(nameHoliday);
+
+        if (textWidth > this.cellWidth - 5) console.log(nameHoliday);
+
+        nameHoliday = this.truncateTextByWidth(nameHoliday, this.cellWidth - 16);
+
+
+        this.printText(nameHoliday, xOffset + (this.cellWidth / 2) - (textWidth / 2), yOffset + 5.5);
+        this.printCircle(xOffset + this.cellWidth - 4, yOffset + 4, this.radio);
+    }
+
+    private truncateTextByWidth(text: string, maxWidth: number) {
+        let truncatedText = text;
+        while (this.doc.getTextWidth(truncatedText) > maxWidth) {
+            truncatedText = truncatedText.slice(0, -1);
+        }
+
+        if (truncatedText !== text) {
+            truncatedText += "...";
+        }
+
+        return truncatedText;
+    }
+
     private printText(text: string, xOffset: number, yOffset: number): void {
         this.doc.text(text, xOffset, yOffset);
+        this.doc.setFontSize(this.fontsize);
     }
 
     private printBorder(xOffset: number, yOffset: number, width: number, height: number): void {
         this.doc.rect(xOffset, yOffset, width, height);
+    }
+
+    private printCircle(xOffset: number, yOffset: number, radio: number): void {
+        this.doc.circle(xOffset, yOffset, radio, 'S');
     }
 
     // Guarda el PDF

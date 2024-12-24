@@ -1,5 +1,7 @@
 export default class Calendar {
     private year: number;
+    // private holidays: string[];
+    private textHolidays = 'Holidays';
 
     private weekDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
     private monthNames = [
@@ -9,6 +11,7 @@ export default class Calendar {
 
     constructor(year: number) {
         this.year = year;
+        // this.holidays = holidays;
     }
 
     public getDaysInMonth(month: number) {
@@ -31,7 +34,15 @@ export default class Calendar {
         return this.monthNames[month - 1];
     }
 
-    public getWeekDays() {
+    public getWeekDays(): string[] {
         return this.weekDays;
+    }
+
+    public getYear(): number {
+        return this.year
+    }
+
+    public getTextHolidays(): string {
+        return this.textHolidays
     }
 }

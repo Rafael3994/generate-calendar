@@ -1,12 +1,24 @@
 const readline = require('readline');
 
+interface IInput {
+    year: undefined | number;
+    holidays: string[];
+}
+
 export default class ReadInputUser {
     public static readTermenalCommand() {
-        const args = process.argv.slice(2); // Ignora los primeros dos elementos
-        const numero = parseInt(args[0], 10);
+        const input: IInput = {
+            year: undefined,
+            holidays: [],
+        };
 
-        if (!isNaN(numero)) {
-            return numero;
+        const args = process.argv.slice(2);
+        const year = parseInt(args[0], 10);
+        console.log(args);
+
+        if (!isNaN(year)) {
+            input.year = year;
+            return year;
         } else {
             throw new Error("Por favor, introduce un número válido.")
         }
