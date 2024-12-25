@@ -1,6 +1,7 @@
 export default class Calendar {
     private year: number;
-    // private holidays: string[];
+    private holidays: string[];
+
     private textHolidays = 'Holidays';
 
     private weekDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
@@ -9,9 +10,9 @@ export default class Calendar {
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    constructor(year: number) {
+    constructor(year: number, holidays: string[]) {
         this.year = year;
-        // this.holidays = holidays;
+        this.holidays = holidays;
     }
 
     public getDaysInMonth(month: number) {
@@ -44,5 +45,9 @@ export default class Calendar {
 
     public getTextHolidays(): string {
         return this.textHolidays
+    }
+
+    public getHolidays(): string[] {
+        return this.holidays
     }
 }

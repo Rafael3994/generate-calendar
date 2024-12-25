@@ -93,9 +93,7 @@ export class GeneratePDF {
                     this.printText(String(day), xOffset + this.cellWidth - 5.15, yOffset + 5.3);
                 }
 
-                const holidays = ['21/01/Cumple Isa', '6/01', '10/01/D. Hispanidad', '02/12/Cumple Eva'];
-
-                holidays.forEach(item => {
+                this.calendar.getHolidays().forEach(item => {
                     const [dayHoliday, monthHoliday, nameHoliday] = item.split('/');
 
                     if (+dayHoliday === day && +monthHoliday === numberMonth) {
