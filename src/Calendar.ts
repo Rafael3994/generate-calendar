@@ -1,8 +1,8 @@
 export default class Calendar {
     private year: number;
-    private holidays: string[];
+    private events: string[];
 
-    private textHolidays = 'Holidays';
+    private textEvent = 'New Event';
 
     private weekDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
     private monthNames = [
@@ -10,10 +10,33 @@ export default class Calendar {
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    constructor(year: number, holidays: string[]) {
+    constructor(year: number, events: string[]) {
         this.year = year;
-        this.holidays = holidays;
+        this.events = this.unifyEventsByDate(events);
     }
+
+    private unifyEventsByDate(events: string[]): string[] {
+        const groupedEvents: { [key: string]: string[] } = {};
+        events.forEach(event => {
+            const [dayEvent, monthEvent, textEvent = this.textEvent] = event.split('/');
+            const dateEvent = this.formatDate(dayEvent) + '/' + this.formatDate(monthEvent);
+
+            if (!groupedEvents[dateEvent]) {
+                groupedEvents[dateEvent] = [];
+            }
+
+            groupedEvents[dateEvent].push(textEvent);
+        });
+
+        return Object.keys(groupedEvents).map(date => {
+            return `${date}/${groupedEvents[date].join('#')}`;
+        });
+    }
+
+    private formatDate(date: string): string {
+        return date.padStart(2, '0');
+    }
+
 
     public getDaysInMonth(month: number) {
         const totalDaysInMonth = new Date(this.year, month, 0).getDate()
@@ -43,11 +66,11 @@ export default class Calendar {
         return this.year
     }
 
-    public getTextHolidays(): string {
-        return this.textHolidays
+    public getTextEvent(): string {
+        return this.textEvent
     }
 
-    public getHolidays(): string[] {
-        return this.holidays
+    public getEvent(): string[] {
+        return this.events
     }
 }
