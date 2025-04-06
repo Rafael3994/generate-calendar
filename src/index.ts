@@ -1,7 +1,7 @@
 import Calendar from "./Calendar.ts";
 import { GeneratePDF } from "./GeneratePDF.ts";
 import ReadInputUser from "./ReadInputUser.ts";
-
+import path from "path";
 import express, { Request, Response } from 'express';
 import bodyParser from "body-parser";
 
@@ -10,6 +10,10 @@ const PORT = 3000;
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 interface RequestBody {
     year: string;
