@@ -6,11 +6,11 @@ export class GeneratePDF {
     private doc: jsPDF;
 
     private pageWidth: number;
-    private cellWidth: number;
-    private cellHeight: number;
+    private cellWidthTable: number;
+    private cellHeightTable: number;
     private calendarWidth: number;
-    private marginLeft: number;
-    private marginTop: number;
+    private marginLeftTable: number;
+    private marginTopTable: number;
     private radio: number;
     private fontsize: number;
 
@@ -18,11 +18,11 @@ export class GeneratePDF {
         this.calendar = calendar;
         this.doc = new jsPDF({ orientation: "landscape" });
         this.pageWidth = this.doc.internal.pageSize.width;
-        this.cellWidth = 36;
-        this.cellHeight = 30;
-        this.calendarWidth = this.cellWidth * 7;
-        this.marginLeft = (this.pageWidth - this.calendarWidth) / 2;
-        this.marginTop = 14;
+        this.cellWidthTable = 36;
+        this.cellHeightTable = 30;
+        this.calendarWidth = this.cellWidthTable * 7;
+        this.marginLeftTable = (this.pageWidth - this.calendarWidth) / 2;
+        this.marginTopTable = 18;
         this.radio = 3.3;
         this.fontsize = 12;
     }
@@ -34,14 +34,18 @@ export class GeneratePDF {
         }
     }
 
+    public getBuffer(): ArrayBuffer {
+        return this.doc.output("arraybuffer");
+    }
+
     public drawCalendar(numberMonth: number): void {
         const monthName = this.calendar.getMonthName(numberMonth);
         const year = this.calendar.getYear();
         const days = this.calendar.getDaysInMonth(numberMonth);
 
         this.drawTitle(monthName, year);
-        this.drawHeader();
-        this.drawBody(days, numberMonth);
+        this.drawTableHeader();
+        this.drawTableBody(days, numberMonth);
     }
 
     private drawTitle(monthName: string, year: number): void {
@@ -52,45 +56,45 @@ export class GeneratePDF {
 
         this.doc.setFont("courier", "bold");
         this.doc.setFontSize(25);
-        this.printText(title, xOffset, 10);
+        this.printText(title, xOffset, 12);
     }
 
-    private drawHeader(): void {
+    private drawTableHeader(): void {
         this.doc.setFontSize(13);
         const weekDays = this.calendar.getWeekDays();
         for (let i = 0; i < weekDays.length; i++) {
-            const xOffset = this.marginLeft + i * this.cellWidth;
-            const yOffset = this.marginTop;
+            const xOffset = this.marginLeftTable + i * this.cellWidthTable;
+            const yOffset = this.marginTopTable;
 
             this.doc.setDrawColor(128, 128, 128);
 
             const widthDay = this.doc.getTextWidth(weekDays[i]);
-            this.printText(weekDays[i], xOffset + (this.cellWidth - widthDay) / 2, yOffset + 7.5)
-            this.printBorder(xOffset, yOffset, this.cellWidth, 12);
+            this.printText(weekDays[i], xOffset + (this.cellWidthTable - widthDay) / 2, yOffset + 5.7)
+            this.printBorder(xOffset, yOffset, this.cellWidthTable, 9);
         }
 
     }
 
-    private drawBody(days: (number | null)[], numberMonth: number): void {
-        let xOffset = this.marginLeft;
-        let yOffset = this.marginTop + 12;
+    private drawTableBody(days: (number | null)[], numberMonth: number): void {
+        let xOffset = this.marginLeftTable;
+        let yOffset = this.marginTopTable + 9;
         this.doc.setFont("helvetica", "normal");
 
         for (let i = 0; i < days.length; i++) {
             const day = days[i];
 
             if (i > 0 && i % 7 === 0) {
-                xOffset = this.marginLeft;
-                yOffset += this.cellHeight;
+                xOffset = this.marginLeftTable;
+                yOffset += this.cellHeightTable;
             }
 
-            this.printBorder(xOffset, yOffset, this.cellWidth, this.cellHeight);
+            this.printBorder(xOffset, yOffset, this.cellWidthTable, this.cellHeightTable);
             if (day !== null) {
                 if (day >= 10) {
-                    this.printText(String(day), xOffset + this.cellWidth - 6.3, yOffset + 5.5);
+                    this.printText(String(day), xOffset + this.cellWidthTable - 6.3, yOffset + 5.5);
                 }
                 else {
-                    this.printText(String(day), xOffset + this.cellWidth - 5.15, yOffset + 5.3);
+                    this.printText(String(day), xOffset + this.cellWidthTable - 5.15, yOffset + 5.3);
                 }
 
                 this.calendar.getEvent().forEach(item => {
@@ -101,17 +105,17 @@ export class GeneratePDF {
                 });
             }
 
-            xOffset += this.cellWidth;
+            xOffset += this.cellWidthTable;
         }
     }
 
     private printEvent(xOffset: number, yOffset: number, nameEvent: string = this.calendar.getTextEvent()) {
         this.doc.setFontSize(10);
-        nameEvent = this.truncateTextToFit(nameEvent, this.cellWidth - 10, this.cellHeight, this.doc.getLineHeightFactor() + 3.5);
+        nameEvent = this.truncateTextToFit(nameEvent, this.cellWidthTable - 10, this.cellHeightTable, this.doc.getLineHeightFactor() + 3.5);
 
 
         this.printText(nameEvent, xOffset + 2, yOffset + 4);
-        this.printCircle(xOffset + this.cellWidth - 4, yOffset + 4, this.radio);
+        this.printCircle(xOffset + this.cellWidthTable - 4, yOffset + 4, this.radio);
     }
 
     private truncateTextToFit(text: string, maxWidth: number, maxHeight: number, lineHeight: number): string {
@@ -169,10 +173,6 @@ export class GeneratePDF {
 
         return allLines.join("\n");
     }
-
-
-
-
 
     private truncateText(lines: string[], totalHeight: number, maxHeight: number) {
         if (totalHeight > maxHeight) {
