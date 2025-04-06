@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Generate Calendar in pdf</title>
+    <link rel="icon" href="/calendar-favicon.svg" type="image/x-icon">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(222deg, #75d0dc, #91c4a5);
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .card {
+            background-color: white;
+            padding: 10px 2rem;
+            margin-top: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 35rem;
+            height: 15rem
+        }
+
+        .card h1 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .form {
+            height: 65%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0 10px;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .input-year {
+            padding: 0.7rem 1rem;
+            width: 30%;
+            text-align: center;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: 0.3s border;
+        }
+
+        .input-year:focus {
+            border-color: #0077ff;
+            outline: none;
+        }
+
+        /* Remove arrows from the number input */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .btn-submit {
+            background-color: #0077ff;
+            color: white;
+            margin-top: 20px;
+            padding: 0.70rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #005dc1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Generate Calendar in pdf</h1>
+        <form class="form" action="/generate" method="POST">
+            <div class="form-group">
+                <label for="year-input">Calendar year:</label>
+                <input id="year-input" class="input-year" type="number" name="year" required min="0" />
+            </div>
+            <button type="submit" class="btn-submit">Generate PDF</button>
+        </form>
+    </div>
+</body>
+
+<script defer>
+    document.getElementById("year-input").value = new Date().getFullYear();
+</script>
+
+</html>
