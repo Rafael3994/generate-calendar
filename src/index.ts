@@ -3,14 +3,14 @@ import { GeneratePDF } from "./GeneratePDF.ts";
 import ReadInputUser from "./ReadInputUser.ts";
 import path from "path";
 import express, { Request, Response } from 'express';
-import bodyParser from "body-parser";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -30,11 +30,11 @@ app.post("/generate", async (req: Request<{}, {}, RequestBody>, res: Response) =
 
         res.set({
             "Content-Type": "application/pdf",
-            "Content-Disposition": `attachment; filename="calendar_${year}.pdf"`,
+            "Content-Disposition": `attachment; filename="Calendar_${year}.pdf"`,
         });
         res.send(Buffer.from(pdfGenerator.getBuffer()));
     } catch (error) {
-        console.error(error);
+        console.error('ERROR - POST /generate', error);
         res.status(500).send("Error generating PDF");
     }
 
