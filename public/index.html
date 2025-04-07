@@ -123,33 +123,35 @@
 <script defer>
     const form = document.querySelector(".form");
     form.addEventListener("submit", async (e) => {
-        e.preventDefault(); // Evita recarga
+        e.preventDefault();
         const year = document.getElementById("year-input").value;
-        console.log('year', year);
 
-        try {
-            const response = await fetch("/generate", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ year })
+        fetch("/generate", {
+            method: "POST",
+            body: JSON.stringify({ year }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al generar el PDF");
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `Calendar_${year}.pdf`;
+                a.click();
+                URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error("Error:", error);
             });
 
-            if (!response.ok) throw new Error("Error generando PDF");
 
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `calendar_${year}.pdf`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        } catch (err) {
-            alert("Hubo un error al generar el PDF");
-            console.error(err);
-        }
     });
 
     // Set default year
