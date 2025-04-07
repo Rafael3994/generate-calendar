@@ -44,7 +44,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 15px 0;
         }
 
         .form-group {
@@ -107,7 +107,7 @@
 <body>
     <div class="card">
         <h1>Generate Calendar in pdf</h1>
-        <form class="form" action="/generate" method="POST">
+        <form id="form-id" class="form" action="/generate" method="POST">
             <div class="form-group">
                 <label for="year-input">Calendar year:</label>
                 <input id="year-input" class="input-year" type="number" name="year" required min="0" />
@@ -118,6 +118,41 @@
 </body>
 
 <script defer>
+    document.getElementById("year-input").value = new Date().getFullYear();
+</script>
+<script defer>
+    const form = document.querySelector(".form");
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Evita recarga
+        const year = document.getElementById("year-input").value;
+        console.log('year', year);
+
+        try {
+            const response = await fetch("/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ year })
+            });
+
+            if (!response.ok) throw new Error("Error generando PDF");
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `calendar_${year}.pdf`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            alert("Hubo un error al generar el PDF");
+            console.error(err);
+        }
+    });
+
+    // Set default year
     document.getElementById("year-input").value = new Date().getFullYear();
 </script>
 
