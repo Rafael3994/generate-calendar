@@ -29,7 +29,6 @@ app.post("/generate", async (req: Request<{}, {}, RequestBody>, res: Response) =
         pdfGenerator.drawCalendarYear();
 
         const buffer = pdfGenerator.getBuffer();
-        console.log('PDF Buffer size:', buffer.byteLength);
         res.set({
             "Content-Type": "application/pdf",
             "Content-Disposition": `attachment; filename="Calendar_${year}.pdf"`,
