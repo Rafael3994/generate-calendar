@@ -28,11 +28,13 @@ app.post("/generate", async (req: Request<{}, {}, RequestBody>, res: Response) =
         const pdfGenerator = new GeneratePDF(calendar);
         pdfGenerator.drawCalendarYear();
 
+        const buffer = pdfGenerator.getBuffer();
+        console.log('PDF Buffer size:', buffer.byteLength);
         res.set({
             "Content-Type": "application/pdf",
             "Content-Disposition": `attachment; filename="Calendar_${year}.pdf"`,
         });
-        res.send(Buffer.from(pdfGenerator.getBuffer()));
+        res.send(Buffer.from(buffer));
     } catch (error) {
         console.error('ERROR - POST /generate', error);
         res.status(500).send("Error generating PDF");
