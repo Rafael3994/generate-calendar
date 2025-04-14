@@ -3,10 +3,21 @@ import fs from 'fs';
 import path from 'path';
 
 export default class EmojiManager {
-    public getEmojisInText = (text: string): RegExpMatchArray | null => {
+    public isEmoji = (char: string): boolean => {
         const regex = emojiRegex();
-        return text.match(regex);
+        return regex.test(char);
     };
+
+    public getEmojisInText = (text: string): string[] => {
+        const regex = emojiRegex();
+        return text.match(regex) || [];  // Devuelve un array de emojis como strings
+    };
+
+    public transformEmojiToHexa = (emoji: string): string => {
+        const codePoint = emoji.codePointAt(0);
+        return codePoint !== undefined ? codePoint.toString(16) : '';
+    };
+
 
     public transformEmojisToHexa = (emojis: RegExpMatchArray | null): string[] => {
         if (!emojis || emojis.length === 0) return [];
@@ -25,9 +36,9 @@ export default class EmojiManager {
 
     public async loadImageAsBase64(source: string) {
         if (source.startsWith('http') || source.startsWith('https')) {
-            return await this.loadImageHttpAsBase64(source);
+            return `data:image/png;base64,${await this.loadImageHttpAsBase64(source)}`;
         } else {
-            return this.loadImageLocalAsBase64(source);
+            return `data:image/png;base64,${this.loadImageLocalAsBase64(source)}`;
         }
     }
 
