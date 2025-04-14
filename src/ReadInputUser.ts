@@ -13,7 +13,7 @@ export default class ReadInputUser {
         if (!isNaN(year)) {
             return { year, holidays: JSON.parse(args[1]) };
         } else {
-            console.log("No parameters have been entered by command")
+            console.error("No parameters have been entered by command")
             return { year: null, holidays: [] };
         }
     }

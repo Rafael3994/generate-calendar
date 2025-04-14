@@ -1,8 +1,12 @@
 import jsPDF from "jspdf";
 import Calendar from "./Calendar.ts";
+import EmojiManager from "./EmojiManager.ts";
+import fs from 'fs';
+import path from 'path';
 
 export class GeneratePDF {
     private calendar: Calendar;
+    private emojiManage: EmojiManager;
     private doc: jsPDF;
 
     private pageWidth: number;
@@ -16,6 +20,7 @@ export class GeneratePDF {
 
     constructor(calendar: Calendar) {
         this.calendar = calendar;
+        this.emojiManage = new EmojiManager();
         this.doc = new jsPDF({ orientation: "landscape" });
         this.pageWidth = this.doc.internal.pageSize.width;
         this.cellWidthTable = 36;
@@ -27,29 +32,37 @@ export class GeneratePDF {
         this.fontsize = 12;
     }
 
-    public drawCalendarYear(): void {
-        for (let index = 1; index <= 12; index++) {
-            this.drawCalendar(index);
-            if (index !== 12) this.doc.addPage('a4', 'landscape');
-        }
+    public async drawCalendarYear(): Promise<void> {
+        // for (let index = 1; index <= 12; index++) {
+        //     this.drawCalendar(index);
+        //     if (index !== 12) this.doc.addPage('a4', 'landscape');
+        // }
+        await this.drawCalendar(1);
+        this.doc.addPage('a4', 'landscape');
     }
 
     public getBuffer(): ArrayBuffer {
         return this.doc.output("arraybuffer");
     }
 
-    public drawCalendar(numberMonth: number): void {
+    public async drawCalendar(numberMonth: number): Promise<void> {
         const monthName = this.calendar.getMonthName(numberMonth);
         const year = this.calendar.getYear();
         const days = this.calendar.getDaysInMonth(numberMonth);
 
-        this.drawTitle(monthName, year);
+        await this.drawTitle(monthName, year);
         this.drawTableHeader();
         this.drawTableBody(days, numberMonth);
     }
 
-    private drawTitle(monthName: string, year: number): void {
+    private async drawTitle(monthName: string, year: number) {
         const title = `${monthName} ${year}`;
+        const text = "Diciembre 2023 ";
+        // const emojis = this.emojiManage.getEmojisInText(text);
+        // const emojisHexa = this.emojiManage.transformEmojisToHexa(emojis);
+        // console.log('emojisHexa', emojisHexa);
+
+
         const textWidth = this.doc.getTextWidth(title);
 
         const xOffset = (this.pageWidth / 2) - textWidth;
@@ -57,6 +70,25 @@ export class GeneratePDF {
         this.doc.setFont("courier", "bold");
         this.doc.setFontSize(25);
         this.printText(title, xOffset, 12);
+
+        const base64Image = await this.emojiManage.loadImageAsBase64('https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f367.png');
+        const finalData = `data:image/png;base64,${base64Image}`;
+        this.doc.addImage(finalData, 'PNG', xOffset, 20, 25, 25);
+
+        // Aquí procesamos el texto para detectar y reemplazar los emojis por imágenes
+        //         if (emojisHexa) {
+        //             for (let emoji of emojisHexa) {
+        //                 const emojiUrl = this.emojiManage.getEmojiURL(emoji);  // Obtener la URL del emoji
+        // 
+        //                 // Cargar la imagen y convertirla a base64
+        //                 const base64Image = await this.emojiManage.loadImageAsBase64(emojiUrl);
+        // 
+        //                 // Usamos addImage para insertar el emoji como una imagen PNG en el PDF
+        //                 this.doc.addImage(base64Image, "PNG", currentX, 20, 10, 10);  // Ajusta el tamaño de la imagen (10x10 es un ejemplo)
+        // 
+        //                 currentX += 12;  // Ajustar la posición X para que el siguiente emoji no se solape
+        //             }
+        //         }
     }
 
     private drawTableHeader(): void {

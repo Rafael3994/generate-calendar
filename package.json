@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "body-parser": "^2.2.0",
+    "emoji-regex": "^10.4.0",
     "express": "^5.1.0",
     "jspdf": "^2.5.2"
   }

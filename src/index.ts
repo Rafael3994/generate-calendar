@@ -4,6 +4,7 @@ import ReadInputUser from "./ReadInputUser.ts";
 import path from "path";
 import express, { Request, Response } from 'express';
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -26,7 +27,7 @@ app.post("/generate", async (req: Request<{}, {}, RequestBody>, res: Response) =
     try {
         const calendar = new Calendar(parseInt(year), []);
         const pdfGenerator = new GeneratePDF(calendar);
-        pdfGenerator.drawCalendarYear();
+        await pdfGenerator.drawCalendarYear();
 
         const buffer = pdfGenerator.getBuffer();
         res.set({
@@ -45,16 +46,16 @@ app.listen(PORT, () => {
     console.log(`Servidor en http://localhost:${PORT}`);
 });
 
-(() => {
+(async () => {
     try {
         const { year, holidays } = ReadInputUser.readTermenalCommand();
         if (year === null) return;
         const calendar = new Calendar(year, holidays);
         const pdfGenerator = new GeneratePDF(calendar);
-        pdfGenerator.drawCalendarYear();
+        await pdfGenerator.drawCalendarYear();
 
         pdfGenerator.save(`calendar_${year}.pdf`);
     } catch (error) {
-        console.log(error);
+        console.error('Error:', error);
     }
 })();
