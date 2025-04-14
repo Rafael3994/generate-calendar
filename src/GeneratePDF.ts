@@ -97,12 +97,13 @@ export class GeneratePDF {
             this.printBorder(xOffset, yOffset, this.cellWidthTable, this.cellHeightTable);
             if (day !== null) {
                 if (day >= 20) {
-                    await this.printText(String(day), xOffset + this.cellWidthTable - 6.2, yOffset + 5.5);
+                    await this.printText(String(day), xOffset + this.cellWidthTable - 6.2, yOffset + 5.4);
                 } else if (day >= 10 && day < 20) {
-                    await this.printText(String(day), xOffset + this.cellWidthTable - 6.4, yOffset + 5.5);
+                    await this.printText(String(day), xOffset + this.cellWidthTable - 6.4, yOffset + 5.4);
                 } else {
-                    await this.printText(String(day), xOffset + this.cellWidthTable - 5.15, yOffset + 5.3);
+                    await this.printText(String(day), xOffset + this.cellWidthTable - 5.15, yOffset + 5.4);
                 }
+
                 for (const item of this.calendar.getEvent()) {
                     const [dayEvent, monthEvent, nameEvent] = item.split('/');
                     if (+dayEvent === day && +monthEvent === numberMonth) {
@@ -115,56 +116,74 @@ export class GeneratePDF {
     }
 
     private async printEvent(xOffset: number, yOffset: number, nameEvent: string = this.calendar.getTextEvent()) {
-        nameEvent = await this.truncateTextToFit(nameEvent, this.cellWidthTable - 10, this.cellHeightTable, this.doc.getLineHeightFactor() + 3.5);
+        nameEvent = await this.truncateTextToFit(nameEvent, this.cellWidthTable - 5, this.cellHeightTable + 5, this.doc.getLineHeightFactor() + 3.5);
         this.doc.setFontSize(10);
         await this.printText(nameEvent, xOffset + 1.5, yOffset + 4);
         this.printCircle(xOffset + this.cellWidthTable - 4, yOffset + 4, this.radio);
     }
 
-    private async truncateTextToFit(text: string, maxWidth: number, maxHeight: number, lineHeight: number): Promise<string> {
+    private async truncateTextToFit(
+        text: string,
+        maxWidth: number,
+        maxHeight: number,
+        lineHeight: number
+    ): Promise<string> {
         const phrases = text.split("#");
-        let allLines: string[] = [];
+        const allLines: string[] = [];
         let totalHeight = 0;
-        let currentLine = "";
 
-        for (const phrase of phrases) {
-            const words = phrase.split(" ");
-            let lines: string[] = [];
+        for (let i = 0; i < phrases.length; i++) {
+            const words = phrases[i].split(" ");
+            const lines: string[] = [];
+            let currentLine = "";
+
             for (const word of words) {
-                let textLine = currentLine ? `${currentLine} ${word}` : word;
-                let textWidth = this.doc.getTextWidth(textLine);
-                if (textWidth > maxWidth) {
-                    if (this.doc.getTextWidth(word) > maxWidth) {
+                const testLine = currentLine ? `${currentLine} ${word}` : word;
+                const testWidth = this.doc.getTextWidth(testLine);
+
+                if (testWidth > maxWidth) {
+                    const wordWidth = this.doc.getTextWidth(word);
+
+                    if (wordWidth > maxWidth) {
                         currentLine = this.splitWordAndAddToLines(word, lines, lineHeight, maxWidth, maxHeight, totalHeight);
                     } else {
-                        lines.push(currentLine);
+                        if (currentLine) lines.push(currentLine);
                         totalHeight += lineHeight;
 
-                        if ((totalHeight + lineHeight) - 5 > maxHeight) {
-                            allLines.push(lines.join("\n") + " ...");
+                        if (totalHeight + lineHeight > maxHeight) {
+                            const lastLine = lines.pop() ?? "";
+                            allLines.push([...lines, `${lastLine}...`].join("\n"));
                             return allLines.join("\n");
                         }
 
                         currentLine = word;
                     }
                 } else {
-                    currentLine = textLine;
+                    currentLine = testLine;
                 }
             }
+
             if (currentLine) lines.push(currentLine);
             totalHeight += lineHeight;
+
             if (totalHeight + lineHeight > maxHeight) {
-                allLines.push(lines.join("\n") + " ...");
+                const lastLine = lines.pop() ?? "";
+                allLines.push([...lines, `${lastLine}...`].join("\n"));
                 return allLines.join("\n");
             }
+
             allLines.push(lines.join("\n"));
-            if (phrases.indexOf(phrase) < phrases.length - 1) {
+
+            if (i < phrases.length - 1) {
                 allLines.push("");
                 totalHeight += lineHeight;
             }
         }
+
         return allLines.join("\n");
     }
+
+
 
 
     private truncateText(lines: string[], totalHeight: number, maxHeight: number) {
