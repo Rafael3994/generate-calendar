@@ -19,13 +19,14 @@ app.get('/', (req, res) => {
 
 interface RequestBody {
     year: string;
+    events: string[];
 }
 
 app.post("/generate", async (req: Request<{}, {}, RequestBody>, res: Response) => {
-    const { year } = req.body;
+    const { year, events = [] } = req.body;
 
     try {
-        const calendar = new Calendar(parseInt(year), []);
+        const calendar = new Calendar(parseInt(year), events);
         const pdfGenerator = new GeneratePDF(calendar);
         await pdfGenerator.drawCalendarYear();
 
