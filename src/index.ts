@@ -4,13 +4,18 @@ import ReadInputUser from "./ReadInputUser.ts";
 import path from "path";
 import express, { Request, Response } from 'express';
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+    res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+    next();
+});
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -18,15 +23,16 @@ app.get('/', (req, res) => {
 
 interface RequestBody {
     year: string;
+    events: string[];
 }
 
 app.post("/generate", async (req: Request<{}, {}, RequestBody>, res: Response) => {
-    const { year } = req.body;
+    const { year, events = [] } = req.body;
 
     try {
-        const calendar = new Calendar(parseInt(year), []);
+        const calendar = new Calendar(parseInt(year), events);
         const pdfGenerator = new GeneratePDF(calendar);
-        pdfGenerator.drawCalendarYear();
+        await pdfGenerator.drawCalendarYear();
 
         const buffer = pdfGenerator.getBuffer();
         res.set({
@@ -45,16 +51,16 @@ app.listen(PORT, () => {
     console.log(`Servidor en http://localhost:${PORT}`);
 });
 
-(() => {
+(async () => {
     try {
         const { year, holidays } = ReadInputUser.readTermenalCommand();
         if (year === null) return;
         const calendar = new Calendar(year, holidays);
         const pdfGenerator = new GeneratePDF(calendar);
-        pdfGenerator.drawCalendarYear();
+        await pdfGenerator.drawCalendarYear();
 
         pdfGenerator.save(`calendar_${year}.pdf`);
     } catch (error) {
-        console.log(error);
+        console.error('Error:', error);
     }
 })();

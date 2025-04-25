@@ -19,11 +19,19 @@
     "typescript": "^5.7.2"
   },
   "eslintConfig": {
-    "extends": "standard"
+    "extends": "standard",
+    "rules": {
+      "semi": [
+        "error",
+        "always"
+      ]
+    }
   },
   "dependencies": {
     "body-parser": "^2.2.0",
+    "emoji-regex": "^10.4.0",
     "express": "^5.1.0",
+    "grapheme-splitter": "^1.0.4",
     "jspdf": "^2.5.2"
   }
 }

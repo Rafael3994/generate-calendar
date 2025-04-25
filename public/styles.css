@@ -1,0 +1,252 @@
+/* Set global font size and family */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(222deg, #75d0dc, #91c4a5);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Main card container */
+.card {
+    background-color: white;
+    padding: 20px 2rem;
+    margin-top: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 29rem;
+    min-height: 13rem;
+}
+
+.card h1,
+.card h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.card h1 {
+    font-size: x-large;
+}
+
+.card h2 {
+    font-size: larger;
+}
+
+/* Form container */
+.form {
+    height: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.2rem 0;
+}
+
+/* Form group with label and input */
+.form-group {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0 10px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Input fields (year and date) */
+.input-year,
+.input-date {
+    padding: 0.7rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: 0.3s border;
+    text-align: center;
+}
+
+.input-year {
+    width: 30%;
+    font-size: 1rem;
+}
+
+.input-date {
+    width: 25%;
+    font-size: 0.9rem;
+}
+
+.input-year:focus,
+.input-date:focus {
+    border-color: #0077ff;
+    outline: none;
+}
+
+/* Submit buttons */
+.btn-submit,
+.btn-submit-add-event {
+    background-color: #0077ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+
+.btn-submit {
+    padding: 0.70rem 1rem;
+    margin-top: 5px;
+    font-size: 1rem;
+}
+
+.btn-submit-add-event {
+    padding: 0.50rem 0.3rem;
+    font-size: 0.8rem;
+    width: 7rem;
+    margin-top: 5px;
+}
+
+.btn-submit:hover,
+.btn-submit-add-event:hover {
+    background-color: #005dc1;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Event list styles */
+.event-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    margin-top: 15px;
+}
+
+.event-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.event-date {
+    width: 100px;
+}
+
+.event-name {
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.btn-delete-event {
+    background: none;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-delete-event:hover {
+    color: tomato;
+}
+
+/* Calendar table background and borders */
+.datepicker-days table {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+/* Style for each day in the calendar */
+.datepicker-days td.day {
+    font-weight: 500;
+    color: #333;
+    padding: 8px;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+}
+
+/* Hover effect for days */
+.datepicker-days td.day:hover {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+/* Current day style */
+.datepicker-days td.today {
+    background-color: #f0f8ff;
+    border: 1px solid #007bff;
+}
+
+/* Selected day style */
+.datepicker-days td.active {
+    background-color: white !important;
+    color: white !important;
+}
+
+/* Inactive days (from previous/next months) */
+.datepicker-days td.old,
+.datepicker-days td.new {
+    color: #bbb;
+}
+
+/* Hover effect for all days */
+.datepicker-days td:hover {
+    background-color: #f0f0f0 !important;
+    color: inherit !important;
+}
+
+/* Ensure selected days don't change color */
+.datepicker-days td.selected {
+    color: inherit !important;
+    background-color: #DFF0D8 !important;
+}
+
+/* Disable selection of months */
+.datepicker-months .month.active,
+.datepicker-months .month.focused {
+    background-color: transparent !important;
+    color: inherit !important;
+    pointer-events: none !important;
+}
+
+/* Disable click on the year selector */
+.datepicker .datepicker-switch {
+    pointer-events: none !important;
+}
+
+/* Spinner */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #ccc;
+    border-top-color: #0077ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    visibility: hidden;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
