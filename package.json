@@ -19,7 +19,10 @@
     "typescript": "^5.7.2"
   },
   "eslintConfig": {
-    "extends": "standard"
+    "extends": "standard",
+    "rules": {
+    "semi": ["error", "always"]
+  }
   },
   "dependencies": {
     "body-parser": "^2.2.0",

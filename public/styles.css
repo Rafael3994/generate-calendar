@@ -1,3 +1,4 @@
+/* Set global font size and family */
 * {
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,6 +16,7 @@ body {
     width: 100vw;
 }
 
+/* Main card container */
 .card {
     background-color: white;
     padding: 20px 2rem;
@@ -26,20 +28,21 @@ body {
     min-height: 13rem;
 }
 
-.card {
-    h1 {
-        margin-bottom: 1rem;
-        color: #333;
-        font-size: x-large;
-    }
-
-    h2 {
-        margin-bottom: 1rem;
-        color: #333;
-        font-size: larger;
-    }
+.card h1,
+.card h2 {
+    margin-bottom: 1rem;
+    color: #333;
 }
 
+.card h1 {
+    font-size: x-large;
+}
+
+.card h2 {
+    font-size: larger;
+}
+
+/* Form container */
 .form {
     height: 65%;
     display: flex;
@@ -49,6 +52,7 @@ body {
     padding: 0.2rem 0;
 }
 
+/* Form group with label and input */
 .form-group {
     margin-bottom: 1rem;
     display: flex;
@@ -63,47 +67,62 @@ body {
     color: #333;
 }
 
-.input-year {
+/* Input fields (year and date) */
+.input-year,
+.input-date {
     padding: 0.7rem 1rem;
-    width: 30%;
-    text-align: center;
-    font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
     transition: 0.3s border;
+    text-align: center;
+}
+
+.input-year {
+    width: 30%;
+    font-size: 1rem;
 }
 
 .input-date {
-    padding: 0.4rem 0.8rem;
     width: 25%;
-    text-align: center;
     font-size: 0.9rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    transition: 0.3s border;
 }
 
-.input-year:focus {
+.input-year:focus,
+.input-date:focus {
     border-color: #0077ff;
     outline: none;
 }
 
-.btn-submit {
+/* Submit buttons */
+.btn-submit,
+.btn-submit-add-event {
     background-color: #0077ff;
     color: white;
-    margin-top: 5px;
-    padding: 0.70rem 1rem;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
-.btn-submit:hover {
+.btn-submit {
+    padding: 0.70rem 1rem;
+    margin-top: 5px;
+    font-size: 1rem;
+}
+
+.btn-submit-add-event {
+    padding: 0.50rem 0.3rem;
+    font-size: 0.8rem;
+    width: 7rem;
+    margin-top: 5px;
+}
+
+.btn-submit:hover,
+.btn-submit-add-event:hover {
     background-color: #005dc1;
 }
 
+/* Event list styles */
 .event-list {
     margin: 0;
     padding: 0;
@@ -116,7 +135,6 @@ body {
     justify-content: space-between;
     padding: 4px 0;
     border-bottom: 1px solid #ccc;
-    /* opcional para separar eventos */
 }
 
 .event-date {
@@ -128,23 +146,81 @@ body {
     padding-left: 10px;
 }
 
-.btn-submit-add-event {
-    background-color: #0077ff;
-    color: white;
-    margin-top: 5px;
-    padding: 0.50rem 0.3rem;
+.btn-delete-event {
+    background: none;
     border: none;
-    border-radius: 8px;
-    font-size: 0.8rem;
+    font-size: 1em;
     cursor: pointer;
-    transition: background 0.3s ease;
-    width: 7rem;
+    margin-left: 10px;
 }
 
-.padding-0 {
-    padding: 0;
+.btn-delete-event:hover {
+    color: tomato;
 }
 
-.align-items-end {
-    align-items: end;
+/* Calendar table background and borders */
+.datepicker-days table {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+/* Style for each day in the calendar */
+.datepicker-days td.day {
+    font-weight: 500;
+    color: #333;
+    padding: 8px;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+}
+
+/* Hover effect for days */
+.datepicker-days td.day:hover {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+/* Current day style */
+.datepicker-days td.today {
+    background-color: #f0f8ff;
+    border: 1px solid #007bff;
+}
+
+/* Selected day style */
+.datepicker-days td.active {
+    background-color: white !important;
+    color: white !important;
+}
+
+/* Inactive days (from previous/next months) */
+.datepicker-days td.old,
+.datepicker-days td.new {
+    color: #bbb;
+}
+
+/* Hover effect for all days */
+.datepicker-days td:hover {
+    background-color: #f0f0f0 !important;
+    color: inherit !important;
+}
+
+/* Ensure selected days don't change color */
+.datepicker-days td.selected {
+    color: inherit !important;
+    background-color: #DFF0D8 !important;
+}
+
+/* Disable selection of months */
+.datepicker-months .month.active,
+.datepicker-months .month.focused {
+    background-color: transparent !important;
+    color: inherit !important;
+    pointer-events: none !important;
+}
+
+/* Disable click on the year selector */
+.datepicker .datepicker-switch {
+    pointer-events: none !important;
 }
