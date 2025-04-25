@@ -104,6 +104,7 @@ body {
     transition: background 0.3s ease;
 }
 
+
 .btn-submit {
     padding: 0.70rem 1rem;
     margin-top: 5px;
@@ -120,6 +121,14 @@ body {
 .btn-submit:hover,
 .btn-submit-add-event:hover {
     background-color: #005dc1;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 /* Event list styles */
@@ -223,4 +232,21 @@ body {
 /* Disable click on the year selector */
 .datepicker .datepicker-switch {
     pointer-events: none !important;
+}
+
+/* Spinner */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #ccc;
+    border-top-color: #0077ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    visibility: hidden;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

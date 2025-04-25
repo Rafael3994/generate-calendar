@@ -1,13 +1,13 @@
 import jsPDF from "jspdf";
 import Calendar from "./Calendar.ts";
 import EmojiManager from "./EmojiManager.ts";
-import fs from 'fs';
-import path from 'path';
+import GraphemeSplitter from "grapheme-splitter";
 
 export class GeneratePDF {
     private calendar: Calendar;
     private emojiManage: EmojiManager;
     private doc: jsPDF;
+    private graphemeSplitter: GraphemeSplitter;
 
     private pageWidth: number;
     private cellWidthTable: number;
@@ -22,6 +22,7 @@ export class GeneratePDF {
         this.calendar = calendar;
         this.emojiManage = new EmojiManager();
         this.doc = new jsPDF({ orientation: "landscape" });
+        this.graphemeSplitter = new GraphemeSplitter();
         this.pageWidth = this.doc.internal.pageSize.width;
         this.cellWidthTable = 36;
         this.cellHeightTable = 30;
@@ -105,9 +106,12 @@ export class GeneratePDF {
                 }
 
                 for (const item of this.calendar.getEvent()) {
-                    const [dayEvent, monthEvent, nameEvent] = item.split('/');
-                    if (+dayEvent === day && +monthEvent === numberMonth) {
-                        await this.printEvent(xOffset, yOffset, nameEvent);
+                    const parsed = this.calendar.parseEvent(item);
+                    if (parsed) {
+                        const { dayEvent, monthEvent, nameEvent } = parsed;
+                        if (+dayEvent === day && +monthEvent === numberMonth) {
+                            await this.printEvent(xOffset, yOffset, nameEvent);
+                        }
                     }
                 }
             }
@@ -215,23 +219,23 @@ export class GeneratePDF {
     private async printText(text: string, xOffset: number, yOffset: number): Promise<void> {
         const lines = text.split('\n');
         const lineHeight = this.doc.getLineHeightFactor() + 2.9;
-
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
             let currentX = xOffset;
             const currentY = yOffset + i * lineHeight;
 
-            for (const char of line) {
-                if (this.emojiManage.isEmoji(char)) {
-                    const emojiHex = this.emojiManage.transformEmojiToHexa(char);
+            const graphemes = this.graphemeSplitter.splitGraphemes(line);
+
+            for (const part of graphemes) {
+                if (this.emojiManage.isEmoji(part)) {
+                    const emojiHex = this.emojiManage.transformEmojiToHexa(part);
                     const emojiUrl = this.emojiManage.getEmojiURL(emojiHex);
                     const base64Image = await this.emojiManage.loadImageAsBase64(emojiUrl);
-
                     this.doc.addImage(base64Image, 'PNG', currentX, currentY - 3, 3.5, 3.5);
                     currentX += 3.5;
                 } else {
-                    this.doc.text(char, currentX, currentY);
-                    currentX += this.doc.getTextWidth(char);
+                    this.doc.text(part, currentX, currentY);
+                    currentX += this.doc.getTextWidth(part);
                 }
             }
         }

@@ -69,6 +69,11 @@ function addEventHandlers () {
     e.preventDefault();
     const year = document.getElementById('input-year').value;
 
+    const spinner = document.getElementById('spinner');
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    spinner.style.visibility = 'visible';
+
     try {
       const response = await fetch('/generate', {
         method: 'POST',
@@ -90,6 +95,9 @@ function addEventHandlers () {
       events.length = 0;
     } catch (error) {
       console.error('ERROR /generate:', error);
+    } finally {
+      spinner.style.visibility = 'hidden';
+      submitBtn.disabled = false;
     }
   });
 }

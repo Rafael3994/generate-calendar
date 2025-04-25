@@ -18,19 +18,29 @@ export default class Calendar {
     private unifyEventsByDate(events: string[]): string[] {
         const groupedEvents: { [key: string]: string[] } = {};
         events.forEach(event => {
-            const [dayEvent, monthEvent, textEvent = this.textEvent] = event.split('/');
-            const dateEvent = this.formatDate(dayEvent) + '/' + this.formatDate(monthEvent);
-
-            if (!groupedEvents[dateEvent]) {
-                groupedEvents[dateEvent] = [];
+            const parsed = this.parseEvent(event);
+            if (parsed) {
+                const { dayEvent, monthEvent, nameEvent } = parsed;
+                const dateEvent = this.formatDate(dayEvent) + '/' + this.formatDate(monthEvent);
+                if (!groupedEvents[dateEvent]) {
+                    groupedEvents[dateEvent] = [];
+                }
+                groupedEvents[dateEvent].push(nameEvent);
+            } else {
+                console.warn("Invalid format:", event);
             }
-
-            groupedEvents[dateEvent].push(textEvent);
         });
 
         return Object.keys(groupedEvents).map(date => {
             return `${date}/${groupedEvents[date].join('#')}`;
         });
+    }
+
+    public parseEvent(eventStr: string) {
+        const match = eventStr.trim().match(/^(\d{2})\/(\d{2})\/(.+)$/);
+        if (!match) return null;
+        const [, dayEvent, monthEvent, nameEvent] = match;
+        return { dayEvent, monthEvent, nameEvent };
     }
 
     private formatDate(date: string): string {
