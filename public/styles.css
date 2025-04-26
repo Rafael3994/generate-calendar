@@ -95,7 +95,8 @@ body {
 
 /* Submit buttons */
 .btn-submit,
-.btn-submit-add-event {
+.btn-submit-add-event,
+.btn-file {
     background-color: #0077ff;
     color: white;
     border: none;
@@ -104,6 +105,10 @@ body {
     transition: background 0.3s ease;
 }
 
+.btn-file {
+    font-size: 0.8rem;
+    padding: 3.5px 8px;
+}
 
 .btn-submit {
     padding: 0.70rem 1rem;
@@ -119,7 +124,8 @@ body {
 }
 
 .btn-submit:hover,
-.btn-submit-add-event:hover {
+.btn-submit-add-event:hover,
+.btn-file:hover {
     background-color: #005dc1;
 }
 
@@ -249,4 +255,21 @@ body {
     to {
         transform: rotate(360deg);
     }
+}
+
+/* Custom */
+.justify-content-space-between {
+    justify-content: space-between;
+}
+
+.flex-direction-column {
+    flex-direction: column;
+}
+
+.align-items {
+    align-items: start;
+}
+
+.gap-5-px {
+    gap: 5px;
 }

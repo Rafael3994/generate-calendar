@@ -38,7 +38,11 @@
 
     <div class="card">
         <h2>Add Events</h2>
-        <input type="file" id="upload-file" accept=".csv, .xlsx, .xls" />
+        <div class="form-group flex-direction-column align-items gap-5-px">
+            <input type="file" id="upload-file" accept=".csv, .xlsx, .xls" style="display: none;" />
+            <button id="download-template-csv" class="btn-file">Download Template</button>
+            <button type="button" class="btn-file">Choose File</button>
+        </div>
         <form>
             <div class="form-group">
                 <label for="input-date">Select a day:</label>

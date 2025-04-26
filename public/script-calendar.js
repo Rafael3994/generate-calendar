@@ -126,6 +126,21 @@ function addEventHandlers () {
       reader.readAsText(file, 'UTF-8');
     }
   });
+
+  document.getElementById('download-template-csv').addEventListener('click', function () {
+    const csvData = [
+      ['Day', 'Month', 'Event Name'],
+      ['01', '01', 'Sample Event']
+    ];
+
+    const csv = csvData.map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'template.csv';
+    link.click();
+  });
 }
 
 function formatEventToBackend (day, month, nameEvent) {
