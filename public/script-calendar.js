@@ -149,8 +149,7 @@ function addEventHandlers () {
   document.getElementById('download-template-csv').addEventListener('click', function () {
     const csvContent = [
       ['Day', 'Month', 'Event'],
-      ['01', '01', 'Sample Event'],
-      ['25', '12', 'Christmas']
+      ['01', '01', 'Sample Event']
     ].map(row => row.join(';')).join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
