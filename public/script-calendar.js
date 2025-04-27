@@ -1,5 +1,4 @@
-/* global $ alert */
-/* global MutationObserver */
+/* global $ alert MutationObserver FileReader XLSX */
 
 const events = [];
 main();
@@ -56,8 +55,7 @@ function addEventHandlers () {
     }
 
     const [day, month] = rawDate.split('/');
-    const formattedEvent = `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${nameEvent}`;
-    events.push(formattedEvent);
+    events.push(formatEventToBackend(day, month, nameEvent));
 
     renderEventList(day, month, nameEvent);
     $inputDate.value = '';
@@ -69,11 +67,10 @@ function addEventHandlers () {
     e.preventDefault();
     const year = document.getElementById('input-year').value;
 
-    const spinner = document.getElementById('spinner');
     const submitBtn = document.getElementById('submit-btn');
+    const submitSpinner = document.getElementById('submit-spinner');
     submitBtn.disabled = true;
-    spinner.style.visibility = 'visible';
-
+    submitSpinner.style.visibility = 'visible';
     try {
       const response = await fetch('/generate', {
         method: 'POST',
@@ -96,10 +93,99 @@ function addEventHandlers () {
     } catch (error) {
       console.error('ERROR /generate:', error);
     } finally {
-      spinner.style.visibility = 'hidden';
+      submitSpinner.style.visibility = 'hidden';
       submitBtn.disabled = false;
     }
   });
+
+  document.getElementById('choose-file-btn').addEventListener('click', function () {
+    document.getElementById('upload-file').click();
+  });
+
+  // Create event to import files (xlsx, xlx and csv)
+  document.getElementById('upload-file').addEventListener('change', function (e) {
+    const chooseFileBtn = document.getElementById('choose-file-btn');
+    const chooseFileSpinner = document.getElementById('choose-file-spinner');
+    try {
+      const file = e.target.files[0];
+      if (!file) {
+        console.error('Error file');
+        return;
+      }
+      chooseFileBtn.disabled = true;
+      chooseFileSpinner.style.visibility = 'visible';
+      const reader = new FileReader();
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      reader.onload = function (event) {
+        let eventsToFile;
+        if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+          eventsToFile = getEventsFromXslx(event);
+        } else if (fileExtension === 'csv') {
+          eventsToFile = getEventsFromCsv(event);
+        }
+
+        eventsToFile.forEach((event) => {
+          const [day, month, name] = event;
+          renderEventList(day, month, name);
+          events.push(formatEventToBackend(day, month, name));
+        });
+
+        chooseFileBtn.disabled = false;
+        chooseFileSpinner.style.visibility = 'hidden';
+      };
+
+      if (fileExtension === 'xlsx' || fileExtension === 'xlx') {
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.readAsText(file, 'UTF-8');
+      }
+    } catch (error) {
+      chooseFileBtn.disabled = false;
+      chooseFileSpinner.style.visibility = 'hidden';
+      console.error('Error addEventListener upload-file', error);
+    }
+  });
+
+  document.getElementById('download-template-csv').addEventListener('click', function () {
+    const csvContent = [
+      ['Day', 'Month', 'Event'],
+      ['01', '01', 'Sample Event']
+    ].map(row => row.join(';')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'template.csv';
+    link.click();
+  });
+}
+
+function formatEventToBackend (day, month, nameEvent) {
+  return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${nameEvent}`;
+}
+
+function getEventsFromXslx (event) {
+  const data = new Uint8Array(event.target.result);
+  const workbook = XLSX.read(data, { type: 'array' });
+
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+  return jsonData.slice(1).filter(row =>
+    row.some(cell => {
+      const isPass = cell !== null && cell !== undefined && cell.toString().trim() !== '';
+      if (isPass) { row[0] = String(row[0]); row[1] = String(row[1]); }
+      return isPass;
+    })
+  );
+}
+
+function getEventsFromCsv (event) {
+  const text = event.target.result;
+  return text.split('\n')
+    .slice(1).map(row => row.split(';').slice(0, 3).map(cell => cell.trim()))
+    .filter(row => row.some(cell => cell !== ''));
 }
 
 function clearEventList () {
@@ -144,6 +230,8 @@ function initDatePicker (year) {
     disableDaySelection();
     disableMonthSelection();
     removeClickYearInMonthSelection();
+
+    document.getElementsByClassName('datepicker')[0].style.top = '447.414px';
   });
 }
 
