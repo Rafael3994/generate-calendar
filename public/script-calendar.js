@@ -67,10 +67,10 @@ function addEventHandlers () {
     e.preventDefault();
     const year = document.getElementById('input-year').value;
 
-    const spinner = document.getElementById('spinner');
     const submitBtn = document.getElementById('submit-btn');
+    const submitSpinner = document.getElementById('submit-spinner');
     submitBtn.disabled = true;
-    spinner.style.visibility = 'visible';
+    submitSpinner.style.visibility = 'visible';
     try {
       const response = await fetch('/generate', {
         method: 'POST',
@@ -93,49 +93,67 @@ function addEventHandlers () {
     } catch (error) {
       console.error('ERROR /generate:', error);
     } finally {
-      spinner.style.visibility = 'hidden';
+      submitSpinner.style.visibility = 'hidden';
       submitBtn.disabled = false;
     }
   });
 
+  document.getElementById('choose-file-btn').addEventListener('click', function () {
+    document.getElementById('upload-file').click();
+  });
+
   // Create event to import files (xlsx, xlx and csv)
   document.getElementById('upload-file').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    const fileExtension = file.name.split('.').pop().toLowerCase();
-
-    reader.onload = function (event) {
-      let eventsToFile;
-      if (fileExtension === 'xlsx' || fileExtension === 'xls') {
-        eventsToFile = getEventsFromXslx(event);
-      } else if (fileExtension === 'csv') {
-        eventsToFile = getEventsFromCsv(event);
+    const chooseFileBtn = document.getElementById('choose-file-btn');
+    const chooseFileSpinner = document.getElementById('choose-file-spinner');
+    try {
+      const file = e.target.files[0];
+      if (!file) {
+        console.error('Error file');
+        return;
       }
+      chooseFileBtn.disabled = true;
+      chooseFileSpinner.style.visibility = 'visible';
+      const reader = new FileReader();
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      reader.onload = function (event) {
+        let eventsToFile;
+        if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+          eventsToFile = getEventsFromXslx(event);
+        } else if (fileExtension === 'csv') {
+          eventsToFile = getEventsFromCsv(event);
+        }
 
-      eventsToFile.forEach((event) => {
-        const [day, month, name] = event;
-        renderEventList(day, month, name);
-        events.push(formatEventToBackend(day, month, name));
-      });
-    };
+        eventsToFile.forEach((event) => {
+          const [day, month, name] = event;
+          renderEventList(day, month, name);
+          events.push(formatEventToBackend(day, month, name));
+        });
 
-    if (fileExtension === 'xlsx' || fileExtension === 'xlx') {
-      reader.readAsArrayBuffer(file);
-    } else {
-      reader.readAsText(file, 'UTF-8');
+        chooseFileBtn.disabled = false;
+        chooseFileSpinner.style.visibility = 'hidden';
+      };
+
+      if (fileExtension === 'xlsx' || fileExtension === 'xlx') {
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.readAsText(file, 'UTF-8');
+      }
+    } catch (error) {
+      chooseFileBtn.disabled = false;
+      chooseFileSpinner.style.visibility = 'hidden';
+      console.error('Error addEventListener upload-file', error);
     }
   });
 
   document.getElementById('download-template-csv').addEventListener('click', function () {
-    const csvData = [
-      ['Day', 'Month', 'Event Name'],
-      ['01', '01', 'Sample Event']
-    ];
+    const csvContent = [
+      ['Day', 'Month', 'Event'],
+      ['01', '01', 'Sample Event'],
+      ['25', '12', 'Christmas']
+    ].map(row => row.join(';')).join('\n');
 
-    const csv = csvData.map(row => row.join(',')).join('\n');
-
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: 'text/csv' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'template.csv';
@@ -213,6 +231,8 @@ function initDatePicker (year) {
     disableDaySelection();
     disableMonthSelection();
     removeClickYearInMonthSelection();
+
+    document.getElementsByClassName('datepicker')[0].style.top = '447.414px';
   });
 }
 
