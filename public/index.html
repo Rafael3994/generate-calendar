@@ -18,45 +18,49 @@
 </head>
 
 <body>
-    <div class="card">
-        <h1>Generate Calendar in pdf</h1>
-        <form id="form-id" class="form" action="/generate" method="POST">
-            <div class="form-group">
-                <label for="input-year">Calendar year:</label>
-                <input id="input-year" class="form-control input-year" type="text" name="year" required
-                    autocomplete="off" />
-            </div>
+    <div class="container">
+        <div class="card">
+            <h1>Generate Calendar in pdf</h1>
+            <form id="form-id" class="form" action="/generate" method="POST">
+                <div class="form-group">
+                    <label for="input-year">Calendar year:</label>
+                    <input id="input-year" class="form-control input-year" type="text" name="year" required
+                        autocomplete="off" />
+                </div>
 
-            <div class="button-grid">
-                <div></div>
-                <button id="submit-btn" type="submit" class="btn-submit">Generate PDF</button>
-                <div id="submit-spinner" class="spinner"></div>
-            </div>
 
-        </form>
-    </div>
+                <div class="button-grid">
+                    <div></div>
+                    <button id="submit-btn" type="submit" class="btn-submit">Generate PDF</button>
+                    <div id="submit-spinner" class="spinner"></div>
+                </div>
 
-    <div class="card">
-        <h2>Add Events</h2>
-        <div class="form-group flex-direction-column align-items gap-5-px">
-            <input type="file" id="upload-file" accept=".csv, .xlsx, .xls" style="display: none;" />
-            <button id="download-template-csv" class="btn-file">Download Template</button>
-            <div class="form-group padding-0">
-                <button id="choose-file-btn" type="button" class="btn-file">Choose File</button>
-                <div id="choose-file-spinner" class="spinner"></div>
-            </div>
+            </form>
         </div>
-        <form>
-            <div class="form-group">
-                <label for="input-date">Select a day:</label>
-                <input id="input-date" class="form-control input-date" type="text" name="date" autocomplete="off" />
+
+
+        <div class="card margin-bottom-10-rem">
+            <h2>Add Events</h2>
+            <div class="form-group flex-direction-column align-items gap-5-px">
+                <input type="file" id="upload-file" accept=".csv, .xlsx, .xls" style="display: none;" />
+                <button id="download-template-csv" class="btn-file">Download Template</button>
+                <div class="form-group padding-0">
+                    <button id="choose-file-btn" type="button" class="btn-file">Choose File</button>
+                    <div id="choose-file-spinner" class="spinner"></div>
+                </div>
             </div>
-            <div class="form-group padding-0 align-items-end">
-                <textarea id="name-event" class="form-control textarea" rows="2" type="text"></textarea>
-                <button id="btn-submit-add-event" type="button" class="btn-submit-add-event">Add event</button>
-            </div>
-            <ul id="event-list" class="event-list"></ul>
-        </form>
+            <form>
+                <div class="form-group">
+                    <label for="input-date">Select a day:</label>
+                    <input id="input-date" class="form-control input-date" type="text" name="date" autocomplete="off" />
+                </div>
+                <div class="form-group padding-0 align-items-end">
+                    <textarea id="name-event" class="form-control textarea" rows="2" type="text"></textarea>
+                    <button id="btn-submit-add-event" type="button" class="btn-submit-add-event">Add event</button>
+                </div>
+                <ul id="event-list" class="event-list"></ul>
+            </form>
+        </div>
     </div>
 
 </body>
