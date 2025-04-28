@@ -22,6 +22,8 @@ export default class Calendar {
             if (parsed) {
                 const { dayEvent, monthEvent, nameEvent } = parsed;
                 const dateEvent = this.formatDate(dayEvent) + '/' + this.formatDate(monthEvent);
+                console.log('dateEvent', dateEvent);
+
                 if (!groupedEvents[dateEvent]) {
                     groupedEvents[dateEvent] = [];
                 }
@@ -37,7 +39,7 @@ export default class Calendar {
     }
 
     public parseEvent(eventStr: string) {
-        const match = eventStr.trim().match(/^(\d{2})\/(\d{2})\/(.+)$/);
+        const match = eventStr.trim().match(/^(\d{1,2})\/(\d{1,2})\/(.+)$/);
         if (!match) return null;
         const [, dayEvent, monthEvent, nameEvent] = match;
         return { dayEvent, monthEvent, nameEvent };
