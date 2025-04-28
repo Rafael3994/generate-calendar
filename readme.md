@@ -44,6 +44,16 @@ Follow these steps to install and run the project:
    ```
 ![Calendar with events download](./assets/screeshot-project_event.png)
 
+### Build with 🔨
+* [Node.js](https://nodejs.org/es/) - Runtime
+* [Express.js](https://expressjs.com/es/) - Framework backend Javascript
+* [Typescript](https://www.typescriptlang.org/) - Programming Language
+* [Javascript]() - Programming Language
+* [Jspdf](https://artskydj.github.io/jsPDF/docs/index.html) - Library to generate PDFs
+* [Twemoji](https://emojipedia.org/es/twitter) - Icon images
+* [Html](https://html.com/) - Markdown Language
+* [CSS](https://www.w3.org/Style/CSS/Overview.en.html) -  Style Sheet Language
+
 ## Author 👑
 Rafael Garcia Perez
 [GitHub - Rafael3994](https://github.com/Rafael3994)
