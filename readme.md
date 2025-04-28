@@ -2,14 +2,18 @@
 
 ## Descripción 📄
 
-Every year I have to look for a calendar to print out since I like to organize myself that way. This year I decided that instead of wasting time looking for it, I was going to create it myself, so I made this project to generate the annual calendar by months. Just enter the year you want and it will generate the calendar for that year.
+Every year I have to look for a calendar to print out, since I like to organize myself that way. This year I decided that instead of wasting time looking for it, I was going to create it myself, so I made this project to generate the annual calendar by months. Just enter the year you want, and it will generate the calendar for that year.
 
 ### Deploy 🔥
 ```
 https://generate-calendar.onrender.com/
 ```
 
-## Instalación 🚀
+In the page, to generate the calendar, put the year and the different events if you want it. Also, you can download a template to add the events and import this file with them to get it dynamically.
+
+![Page calendar](./assets/screeshot-project-web.png)
+
+## Instalation local 🚀
 
 Follow these steps to install and run the project:
 
@@ -29,7 +33,26 @@ Follow these steps to install and run the project:
    npm run start {year}
    ```
 
-![Logo of the project](./assets/screeshot-project.png)
+![Simple calendar download](./assets/screeshot-project.png)
+
+
+1. Add events to the calendar using a string in the command. In the name of the event, you can use emojis.
+    ```bash
+   npm run start {year} '["{day}/{month}/{name_event}"'
+
+   example:  npm run start 2024 '["1/1/💪 First day of the year 🔥"]'
+   ```
+![Calendar with events download](./assets/screeshot-project_event.png)
+
+### Build with 🔨
+* [Node.js](https://nodejs.org/es/) - Runtime
+* [Express.js](https://expressjs.com/es/) - Framework backend Javascript
+* [Typescript](https://www.typescriptlang.org/) - Programming Language
+* [Javascript]() - Programming Language
+* [Jspdf](https://artskydj.github.io/jsPDF/docs/index.html) - Library to generate PDFs
+* [Twemoji](https://emojipedia.org/es/twitter) - Icon images
+* [Html](https://html.com/) - Markdown Language
+* [CSS](https://www.w3.org/Style/CSS/Overview.en.html) -  Style Sheet Language
 
 ## Author 👑
 Rafael Garcia Perez
